@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", '')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['score-maker', 'localhost', '0.0.0.0']
+ALLOWED_HOSTS = ['score-maker', 'localhost', '0.0.0.0', 'line-provider']
 
 
 # Application definition
@@ -39,8 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'adrf',
 
-    'scores.apps.ScoresConfig'
+    'scores.apps.ScoresConfig',
 ]
 
 MIDDLEWARE = [
@@ -73,6 +74,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+LINE_PROVIDER_URL = os.environ.get('LINE_PROVIDER_URL', 'line-provider')
+
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -87,6 +90,9 @@ DATABASES = {
         'PORT': os.environ.get('POSTGRES_PORT', ''),
     }
 }
+
+KAFKA_BOOTSTRAP_SERVERS = os.environ.get('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092')
+KAFKA_TOPIC = os.environ.get('KAFKA_TOPIC', 'scores')
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

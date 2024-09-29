@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Score(models.Model):
-    event_id = models.CharField(max_length=255)
+    event_id = models.CharField(max_length=24)
     score = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_final = models.BooleanField(default=False)
