@@ -1,4 +1,4 @@
-import datetime
+# import datetime
 import json
 from aiokafka import AIOKafkaProducer
 import httpx
@@ -17,8 +17,8 @@ async def fetch_event(event_id: str) -> dict | None:
 async def is_event_within_deadline(event_id: str) -> bool:
     event = await fetch_event(event_id)
     if event:
-        deadline = event.get('deadline')
-        return datetime.utcnow() < deadline
+        # deadline = event.get('deadline')
+        return True  # TODO: Implement deadline
     return False
 
 

@@ -13,7 +13,7 @@ RUN poetry install --no-dev
 
 COPY . .
 
-EXPOSE 8000
+EXPOSE 8001
 
 ENV PATH="/app/.venv/bin:$PATH"
 

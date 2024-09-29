@@ -1,12 +1,6 @@
 from rest_framework import serializers
 
-from scores.models import Score, ScoreHistory
-
-
-class ScoreSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Score
-        fields = ['id', 'event_id', 'score', 'created_at', 'is_final']
+from scores.models import ScoreHistory
 
 
 class ScoreHistorySerializer(serializers.ModelSerializer):
