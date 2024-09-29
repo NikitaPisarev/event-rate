@@ -1,0 +1,37 @@
+services:
+  score-maker:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: score-maker
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    networks:
+      - score-maker-network
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - score-maker-network
+
+volumes:
+  pgdata:
+
+
+networks:
+  score-maker-network:
+    driver: bridge
