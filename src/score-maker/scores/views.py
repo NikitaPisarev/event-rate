@@ -22,13 +22,39 @@ async def set_score(request: Request) -> Response:
     new_score = request.data.get('score')
 
     if not await is_event_within_deadline(event_id):
-        return Response({'error': 'Event not found or not within deadline'}, status=status.HTTP_403_FORBIDDEN)
+        return Response(
+            {'error': 'Event not found or not within deadline.'},
+            status=status.HTTP_403_FORBIDDEN
+        )
 
-    # old_score = await get_score_by_event_id(event_id)
-    await save_score_history(event_id, 1, new_score)  # TODO: add old_score
+    old_score = await get_old_score(event_id)
+
+    if old_score is not None and old_score == new_score:
+        return Response(
+            {'error': 'New score is the same as the old score'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    score_data = {
+        'event_id': event_id,
+        'old_score': None,
+        'new_score': new_score,
+    }
+
+    serializer = ScoreHistorySerializer(data=score_data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    await save_score_history(event_id, old_score, new_score)
 
     await send_score_to_kafka(event_id, new_score)
     return Response({'event_id': event_id, 'score': new_score}, status=status.HTTP_201_CREATED)
+
+
+@sync_to_async
+def get_old_score(event_id: str) -> int | None:
+    last_score = ScoreHistory.objects.filter(event_id=event_id).order_by('-changed_at').first()
+    return last_score.new_score if last_score else None
 
 
 @sync_to_async
