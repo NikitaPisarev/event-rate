@@ -1,4 +1,7 @@
+from datetime import datetime
 from pydantic import BaseModel, model_validator
+
+from app.api.models import EventStatus
 
 
 class BaseResponse(BaseModel):
@@ -16,5 +19,5 @@ class EventIdResponse(BaseResponse):
 
 
 class EventResponse(EventIdResponse):
-    deadline: str
-    status: str
+    deadline: datetime
+    status: EventStatus

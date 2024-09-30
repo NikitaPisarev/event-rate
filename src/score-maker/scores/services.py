@@ -1,6 +1,7 @@
-# import datetime
-import json
+from datetime import datetime, timezone
 from aiokafka import AIOKafkaProducer
+from dateutil import parser
+import json
 import httpx
 
 from config.settings import KAFKA_BOOTSTRAP_SERVERS, KAFKA_TOPIC, LINE_PROVIDER_URL
@@ -17,8 +18,16 @@ async def fetch_event(event_id: str) -> dict | None:
 async def is_event_within_deadline(event_id: str) -> bool:
     event = await fetch_event(event_id)
     if event:
-        # deadline = event.get('deadline')
-        return True  # TODO: Implement deadline
+        deadline = event.get('deadline')
+        try:
+            deadline = parser.parse(deadline)
+        except (ValueError, TypeError):
+            return False
+
+        if deadline.tzinfo is None:
+            deadline = deadline.replace(tzinfo=timezone.utc)
+
+        return datetime.now(tz=timezone.utc) < deadline
     return False
 
 

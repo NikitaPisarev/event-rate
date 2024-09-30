@@ -1,49 +1,51 @@
+from datetime import datetime
 from pydantic import BaseModel, Field
+from dateutil import parser
 from bson import ObjectId
+from enum import Enum
+
+
+class EventStatus(str, Enum):
+    IN_PROGRESS = "In Progress"
+    HIGH_SCORE = "Rated High"
+    LOW_SCORE = "Rated Low"
 
 
 class Event(BaseModel):
     event_id: str = Field(default_factory=lambda: str(ObjectId()), alias="_id")
-    deadline: str = Field(...)
-    status: str = Field(...)
+    deadline: datetime
+    status: EventStatus
 
-    model_config = {
-        "title": "Event",
-        "description": "A model representing an event in the system",
-        "schema": {
-            "properties": {
-                "event_id": {
-                    "type": "string",
-                    "description": "Unique identifier for the event (MongoDB _id)"
-                },
-                "deadline": {
-                    "type": "string",
-                    "format": "date-time",
-                    "description": "The deadline for submitting scores for the event"
-                },
-                "status": {
-                    "type": "string",
-                    "description": "Current status of the event"
-                }
-            },
-            "required": ["event_id", "deadline", "status"]
+    def parse_deadline(cls, value: str) -> datetime:
+        try:
+            return parser.parse(value)
+        except (ValueError, TypeError):
+            raise ValueError(f"Invalid date format: {value}.")
+
+    def to_internal(self):
+        parsed_deadline = self.parse_deadline(self.deadline)
+        return {
+            "event_id": self.event_id,
+            "deadline": parsed_deadline,
+            "status": self.status,
         }
-    }
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "event_id": str(ObjectId()),
+                "deadline": "2024-12-31T23:59:59",
+                "status": "In Progress"
+            }
+        }
 
 
 class EventStatusUpdate(BaseModel):
-    status: str = Field(...)
+    status: EventStatus
 
-    model_config = {
-        "title": "EventStatusUpdate",
-        "description": "A model for updating the status of an event",
-        "schema": {
-            "properties": {
-                "status": {
-                    "type": "string",
-                    "description": "New status of the event"
-                }
-            },
-            "required": ["status"]
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "status": "Rated High"
+            }
         }
-    }

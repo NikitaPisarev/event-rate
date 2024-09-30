@@ -5,6 +5,7 @@ from bson import ObjectId
 
 from app.config import get_settings
 from app.core.database import event_collection
+from app.api.models import EventStatus
 
 logging.basicConfig(
     level=logging.INFO,
@@ -44,7 +45,11 @@ async def procces_event_message(event_data: str) -> None:
     event_id = data.get('event_id')
     new_score = data.get('score')
 
-    status = "Highly rated" if new_score >= 3 else "Lowly rated"
+    if not 1 <= new_score <= 5:
+        logger.error(f"Invalid score received for event {event_id}: {new_score}. No update performed.")
+        return
+
+    status = EventStatus.HIGH_SCORE if new_score >= 3 else EventStatus.LOW_SCORE
 
     result = await event_collection.update_one(
         {"_id": ObjectId(event_id)},
