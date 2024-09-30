@@ -17,4 +17,4 @@ EXPOSE 8000
 
 ENV PATH="/app/.venv/bin:$PATH"
 
-ENTRYPOINT ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["sh", "entrypoint.sh"]

@@ -6,7 +6,14 @@ from bson import ObjectId
 from app.config import get_settings
 from app.core.database import event_collection
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
+
 logger = logging.getLogger(__name__)
 
 settings = get_settings()
@@ -14,10 +21,13 @@ settings = get_settings()
 
 async def consume_scores() -> None:
     consumer = AIOKafkaConsumer(
-        settings.kafka_broker.topic[0],
+        settings.kafka_broker.topic,
         bootstrap_servers=settings.kafka_broker.bootstrap_servers,
         group_id="line-provider-group",
+        auto_offset_reset="earliest",
+        enable_auto_commit=True
     )
+
     await consumer.start()
     try:
         async for message in consumer:

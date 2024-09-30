@@ -20,8 +20,8 @@ class Security(BaseModel):
 
 
 class KafkaBroker(BaseModel):
-    topic: list[str] = ["scores"]
-    bootstrap_servers: str = "localhost:9092"
+    topic: str = "scores"
+    bootstrap_servers: str = "kafka:9092"
 
 
 class Settings(BaseSettings):
