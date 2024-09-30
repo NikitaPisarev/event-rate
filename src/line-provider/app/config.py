@@ -19,9 +19,15 @@ class Security(BaseModel):
     backend_cors_origins: list[AnyHttpUrl] = []
 
 
+class KafkaBroker(BaseModel):
+    topic: str = "scores"
+    bootstrap_servers: str = "kafka:9092"
+
+
 class Settings(BaseSettings):
     security: Security
     database: MongoDatabase
+    kafka_broker: KafkaBroker
 
     model_config = SettingsConfigDict(
         env_file=f"{PROJECT_DIR}/.env",

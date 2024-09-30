@@ -10,6 +10,8 @@ python = "^3.11"
 fastapi = { extras = ["all"], version = "^0.115.0" }
 pymongo = "^4.9.1"
 motor = "^3.6.0"
+aiokafka = "^0.11.0"
+python-dateutil = "^2.9.0.post0"
 
 
 [build-system]
