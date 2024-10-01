@@ -4,14 +4,14 @@ from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-# from app.core.database import create_indexes
+from app.core.database import create_indexes
 from app.core.kafka_consumer import consume_scores
 from app.api.endpoints.api_router import event_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # await create_indexes()
+    await create_indexes()
     asyncio.create_task(consume_scores())
     yield
 

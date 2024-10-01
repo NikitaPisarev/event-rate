@@ -20,4 +20,4 @@ event_collection = database.get_collection("events")
 
 
 async def create_indexes():
-    await event_collection.create_index(["event_id", ASCENDING], unique=True)
+    await event_collection.create_index([("event_id", ASCENDING)], unique=True)
