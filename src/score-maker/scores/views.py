@@ -6,7 +6,7 @@ from asgiref.sync import sync_to_async
 
 from scores.models import ScoreHistory
 from scores.serializers import ScoreHistorySerializer
-from scores.services import is_event_within_deadline, send_score_to_kafka
+from scores.services import fetch_event, is_event_within_deadline, send_score_to_kafka
 
 
 @api_view(['GET'])
@@ -21,9 +21,16 @@ async def set_score(request: Request) -> Response:
     event_id = request.data.get('event_id')
     new_score = request.data.get('score')
 
-    if not await is_event_within_deadline(event_id):
+    event = await fetch_event(event_id)
+    if not event:
         return Response(
-            {'error': 'Event not found or not within deadline.'},
+            {'error': 'Event not found.'},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    if not await is_event_within_deadline(event):
+        return Response(
+            {'error': 'The deadline for the event is over.'},
             status=status.HTTP_403_FORBIDDEN
         )
 

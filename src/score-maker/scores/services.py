@@ -15,20 +15,17 @@ async def fetch_event(event_id: str) -> dict | None:
         return None
 
 
-async def is_event_within_deadline(event_id: str) -> bool:
-    event = await fetch_event(event_id)
-    if event:
-        deadline = event.get('deadline')
-        try:
-            deadline = parser.parse(deadline)
-        except (ValueError, TypeError):
-            return False
+async def is_event_within_deadline(event: dict) -> bool:
+    deadline = event.get('deadline')
+    try:
+        deadline = parser.parse(deadline)
+    except (ValueError, TypeError):
+        return False
 
-        if deadline.tzinfo is None:
-            deadline = deadline.replace(tzinfo=timezone.utc)
+    if deadline.tzinfo is None:
+        deadline = deadline.replace(tzinfo=timezone.utc)
 
-        return datetime.now(tz=timezone.utc) < deadline
-    return False
+    return datetime.now(tz=timezone.utc) < deadline
 
 
 async def send_score_to_kafka(event_id: str, new_score: str) -> None:
