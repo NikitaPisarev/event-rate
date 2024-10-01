@@ -20,15 +20,9 @@ class EventCreateRequest(BaseRequest):
             raise ValueError(f"Invalid date format: {value}.")
 
     def to_internal(self):
-        return {
-            "deadline": self.parse_deadline(self.deadline),
-            "status": self.status
-        }
+        return {"deadline": self.parse_deadline(self.deadline), "status": self.status}
 
     class Config:
         json_schema_extra = {
-            "example": {
-                "deadline": "10/10/2024 23:59",
-                "status": "In Progress"
-            }
+            "example": {"deadline": "10/10/2024 23:59", "status": "In Progress"}
         }

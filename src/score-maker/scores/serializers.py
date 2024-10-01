@@ -6,7 +6,7 @@ from scores.models import ScoreHistory
 class ScoreHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ScoreHistory
-        fields = ['event_id', 'old_score', 'new_score']
+        fields = ["event_id", "old_score", "new_score"]
 
     def validate_new_score(self, value: int) -> int:
         if not 1 <= value <= 5:

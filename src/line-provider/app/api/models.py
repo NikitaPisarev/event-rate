@@ -35,7 +35,7 @@ class Event(BaseModel):
             "example": {
                 "event_id": str(ObjectId()),
                 "deadline": "2024-12-31T23:59:59",
-                "status": "In Progress"
+                "status": "In Progress",
             }
         }
 
@@ -44,8 +44,4 @@ class EventStatusUpdate(BaseModel):
     status: EventStatus
 
     class Config:
-        json_schema_extra = {
-            "example": {
-                "status": "Rated High"
-            }
-        }
+        json_schema_extra = {"example": {"status": "Rated High"}}
