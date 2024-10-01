@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Waiting for Postgres and Kafka
-sleep 10
+sleep 5
 
 poetry run python3 manage.py makemigrations
 poetry run python3 manage.py migrate
