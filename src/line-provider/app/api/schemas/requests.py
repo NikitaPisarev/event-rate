@@ -28,7 +28,7 @@ class EventCreateRequest(BaseRequest):
     class Config:
         json_schema_extra = {
             "example": {
-                "deadline": "30/09/2024 23:59",
+                "deadline": "10/10/2024 23:59",
                 "status": "In Progress"
             }
         }

@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi import APIRouter, HTTPException, status
 from bson import ObjectId
 
-from app.api.models import EventStatusUpdate
+from app.api.models import Event, EventStatusUpdate
 from app.api.schemas.requests import EventCreateRequest
 from app.api.schemas.responses import EventIdResponse, EventResponse
 from app.core.database import event_collection
@@ -18,7 +18,7 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED
 )
 async def create_event(event: EventCreateRequest) -> EventIdResponse:
-    event_data = event.to_internal()
+    event_data = Event(**event.model_dump()).to_internal()
     result = await event_collection.insert_one(event_data)
     created_event = await event_collection.find_one({"_id": result.inserted_id})
     return created_event
