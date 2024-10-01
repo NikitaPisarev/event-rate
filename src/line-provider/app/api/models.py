@@ -13,7 +13,7 @@ class EventStatus(str, Enum):
 
 class Event(BaseModel):
     event_id: str = Field(default_factory=lambda: str(ObjectId()), alias="_id")
-    deadline: datetime
+    deadline: str = Field(..., format="date-time")
     status: EventStatus
 
     def parse_deadline(cls, value: str) -> datetime:
@@ -25,7 +25,7 @@ class Event(BaseModel):
     def to_internal(self):
         parsed_deadline = self.parse_deadline(self.deadline)
         return {
-            "event_id": self.event_id,
+            "event_id": self.event_id or str(ObjectId()),
             "deadline": parsed_deadline,
             "status": self.status,
         }
@@ -35,7 +35,7 @@ class Event(BaseModel):
             "example": {
                 "event_id": str(ObjectId()),
                 "deadline": "2024-12-31T23:59:59",
-                "status": "In Progress"
+                "status": "In Progress",
             }
         }
 
@@ -44,8 +44,4 @@ class EventStatusUpdate(BaseModel):
     status: EventStatus
 
     class Config:
-        json_schema_extra = {
-            "example": {
-                "status": "Rated High"
-            }
-        }
+        json_schema_extra = {"example": {"status": "Rated High"}}
