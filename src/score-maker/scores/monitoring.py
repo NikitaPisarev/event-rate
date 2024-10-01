@@ -4,6 +4,6 @@ from rest_framework import status
 from adrf.decorators import api_view
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 async def health_check(request: Request) -> Response:
-    return Response({'status': 'OK'}, status=status.HTTP_200_OK)
+    return Response({"status": "OK"}, status=status.HTTP_200_OK)

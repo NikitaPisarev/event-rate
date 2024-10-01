@@ -15,6 +15,7 @@ async def lifespan(app: FastAPI):
     asyncio.create_task(consume_scores())
     yield
 
+
 app = FastAPI(
     title="event-rate",
     version="1.0.0",

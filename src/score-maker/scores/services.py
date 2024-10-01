@@ -16,7 +16,7 @@ async def fetch_event(event_id: str) -> dict | None:
 
 
 async def is_event_within_deadline(event: dict) -> bool:
-    deadline = event.get('deadline')
+    deadline = event.get("deadline")
     try:
         deadline = parser.parse(deadline)
     except (ValueError, TypeError):
@@ -33,10 +33,7 @@ async def send_score_to_kafka(event_id: str, new_score: str) -> None:
     await producer.start()
 
     try:
-        message = {
-            'event_id': event_id,
-            'score': new_score
-        }
-        await producer.send_and_wait(KAFKA_TOPIC, json.dumps(message).encode('utf-8'))
+        message = {"event_id": event_id, "score": new_score}
+        await producer.send_and_wait(KAFKA_TOPIC, json.dumps(message).encode("utf-8"))
     finally:
         await producer.stop()
