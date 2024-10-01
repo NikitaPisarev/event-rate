@@ -11,6 +11,16 @@ from scores.services import fetch_event, is_event_within_deadline, send_score_to
 
 @api_view(["GET"])
 async def get_scores_history(request: Request) -> Response:
+    """
+    Retrieves the entire history of scores.
+
+    Args:
+        request (Request): The incoming HTTP request.
+
+    Returns:
+        Response: A JSON response containing the list of scores, with a status code of 200.
+    """
+
     scores = await sync_to_async(list)(ScoreHistory.objects.all())
     serializer = ScoreHistorySerializer(scores, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -18,6 +28,16 @@ async def get_scores_history(request: Request) -> Response:
 
 @api_view(["POST"])
 async def set_score(request: Request) -> Response:
+    """
+    Sets a score for a given event.
+
+    Args:
+        request (Request): The incoming HTTP request containing the event_id and score.
+
+    Returns:
+        Response: A JSON response with the event_id and score, or an error message if the request is invalid.
+    """
+
     event_id = request.data.get("event_id")
     new_score = request.data.get("score")
 
