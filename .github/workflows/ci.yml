@@ -1,0 +1,46 @@
+name: Linter
+
+on:
+  push:
+    paths-ignore:
+      - 'README.md'
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        run: |
+            python -m pip install --upgrade pip
+            pip install poetry
+
+      - name: Install dependencies
+        run: |
+          poetry init
+          poetry add black flake8 ruff
+          
+      - name: Lint with black
+        run: |
+          poetry run black --check --verbose --diff ./src
+          
+      - name: Lint with flake8
+        run: |
+          poetry run flake8 --count --verbose --max-line-length=88 --extend-ignore=E501,W391,C901,E203 --statistics ./src
+          
+      - name: Lint with ruff
+        run: |
+          poetry run ruff check ./src
+
+      
