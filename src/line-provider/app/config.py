@@ -3,12 +3,12 @@ from pathlib import Path
 from pydantic import AnyHttpUrl, BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-PROJECT_DIR = Path(__file__).parent
+PROJECT_DIR = Path(__file__).parent.parent
 
 
 class MongoDatabase(BaseModel):
     MONGO_USER: str = "mongo"
-    MONGO_HOST: str = "mongo"
+    MONGO_HOST: str = "mongo-db"
     MONGO_PASSWORD: str = "123"
     MONGO_PORT: int = 27017
     MONGO_DB: str = "event_store"
